@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Book Catalog</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="format-detection" content="telephone=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="author" content="">
+	<meta name="keywords" content="">
+	<meta name="description" content="">
+
+	<meta name="_csrf" content="${_csrf.token}">
+	<meta name="_csrf_header" content="${_csrf.headerName}">
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+	<link rel="stylesheet" type="text/css" href="/style.css">
+
+
+</head>
+
+<body class="w-100 h-100">
+
+
+<div id="header-wrap">
+	<header id="header">
+
+	</header>
+</div>
+<div class="container-md">
+	<form class="w-100 d-flex" id="searchForm" method="GET" action="/search">
+		<input class="w-100 m-0 form-controle rounded-0" type="text" id="searchInput" name="keyword" placeholder="Search books...">
+		<button class="btn btn-dark m-0 rounded-0" type="submit">Search</button>
+	</form>
+	<table class="table">
+		<thead>
+			<th scope="col">Name</th>
+			<th scope="col">Employee Id</th>
+			<th scope="col">Birthdate</th>
+			<th scope="col">Department</th>
+			<th scope="col">Salary</th>
+			<th scope="col">Actions</th>
+		</thead>
+		<tbody>
+		<tr th:each="employee : ${employees}">
+			<td th:text="${employee.fname != null ? employee.fname + ' ' + employee.lname : 'Unknown'}"></td>
+			<td th:text="${employee.id != null ? employee.id : 0}"></td>
+			<td th:text="${employee.birthdate != null ? employee.birthdate : 0}"></td>
+			<td th:text="${employee.department != null ? employee.department : 0}"></td>
+			<td th:text="${employee.salary != null ? employee.salary : 0}"></td>
+			<td>
+				<div class="d-flex flex-row">
+					<a th:href="@{/employee/{id}(id=${employee.id})}" class="btn btn-dark text-decoration-none m-1"><i class="bi bi-eye">View</i></a>
+					<form th:action="@{/employee/delete/{id}(id=${employee.id})}" method="post" class="d-inline">
+						<input type="hidden" name="_method" value="delete">
+
+						<button type="submit" class="btn btn-danger btn-sm">
+							<i class="bi bi-trash">Delete</i>
+						</button>
+					</form>
+				</div>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+</div>
+<p th:text="${avgSalary != null ? 'Avarage Salary: ' + avgSalary : 'Unknown'}"></p>
+<p th:text="${avgAge != null ? 'Avarage Age: ' + avgAge : 'Unknown'}"></p>
+<footer id="footer">
+	<div class="container">
+
+	</div>
+	</div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</body>
+
+</html>

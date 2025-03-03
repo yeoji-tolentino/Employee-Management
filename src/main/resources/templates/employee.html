@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Employee</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+</head>
+<body>
+    <div class="container my-5">
+        <h2 class="mb-4">Employee Details</h2>
+        <div class="card shadow">
+            <div class="card-body">
+                <h5 class="card-title">
+                    Employee ID: <span th:text="${employee != null ? employee.id : 'N/A'}">ID</span>
+                </h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <strong>Name:</strong> <span th:text="${employee != null ? employee.fname + ' ' + employee.lname : 'N/A'}">Full Name</span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Birthdate:</strong> <span th:text="${employee != null ? employee.birthdate : 'N/A'}">Birthdate</span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Department:</strong> <span th:text="${employee != null ? employee.department : 'N/A'}">Department</span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Salary:</strong> ₱<span th:text="${employee != null ? employee.salary : '0.00'}">Salary</span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Phone:</strong> <span th:text="${employee != null ? employee.phone : 'N/A'}">Phone</span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Address:</strong>
+                        <span th:text="${employee != null && employee.address != null ? employee.address.house_no + ' ' + employee.address.street + ', ' + employee.address.barangay + ', ' + employee.address.city : 'N/A'}">
+                            Full Address
+                        </span>
+                    </li>
+                </ul>
+                <a href="/" class="btn btn-primary mt-3">Back to Employee List</a>
+            </div>
+        </div>
+    </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</body>
+</html>
