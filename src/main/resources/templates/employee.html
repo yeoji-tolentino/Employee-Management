@@ -14,29 +14,65 @@
                 <h5 class="card-title">
                     Employee ID: <span th:text="${employee != null ? employee.id : 'N/A'}">ID</span>
                 </h5>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <strong>Name:</strong> <span th:text="${employee != null ? employee.fname + ' ' + employee.lname : 'N/A'}">Full Name</span>
-                    </li>
-                    <li class="list-group-item">
-                        <strong>Birthdate:</strong> <span th:text="${employee != null ? employee.birthdate : 'N/A'}">Birthdate</span>
-                    </li>
-                    <li class="list-group-item">
-                        <strong>Department:</strong> <span th:text="${employee != null ? employee.department : 'N/A'}">Department</span>
-                    </li>
-                    <li class="list-group-item">
-                        <strong>Salary:</strong> ₱<span th:text="${employee != null ? employee.salary : '0.00'}">Salary</span>
-                    </li>
-                    <li class="list-group-item">
-                        <strong>Phone:</strong> <span th:text="${employee != null ? employee.phone : 'N/A'}">Phone</span>
-                    </li>
-                    <li class="list-group-item">
-                        <strong>Address:</strong>
-                        <span th:text="${employee != null && employee.address != null ? employee.address.house_no + ' ' + employee.address.street + ', ' + employee.address.barangay + ', ' + employee.address.city : 'N/A'}">
-                            Full Address
-                        </span>
-                    </li>
-                </ul>
+                <form method="POST" th:action="@{/update/employee/{id}(id=${employee.id})}">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <div>
+                                <strong>Employee Id:</strong>
+                                <input class="form-control" type="number" th:value="${employee.employee_id}" name="employee_id" id="employee_id" required/>
+                            </div>
+                            <div>
+                                <strong>First Name:</strong>
+                                <input class="form-control" type="text" th:value="${employee.fname}" name="fname" id="fname" required/>
+                            </div>
+                            <div>
+                                <strong>Last Name:</strong>
+                                <input class="form-control" type="text" th:value="${employee.lname}" name="lname" id="lname" required/>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Birthdate:</strong>
+                            <input type="date" id="birthdate" name="birthdate" th:value="${employee.birthdate}" required>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Birthdate:</strong>
+                            <input type="number" id="age" name="age" th:value="${employee.age}" required>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Department:</strong> <span th:text="${employee != null ? employee.department : 'N/A'}">Department</span>
+                            <input type="text" id="department" name="department" th:value="${employee.department}" required>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Salary:</strong>
+                            <input type="number" min="0" id="salary" name="salary" th:value="${employee.salary}" required>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Phone:</strong>
+                            <input type="number" id="phone" name="phone" th:value="${employee.phone}" required>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Address:</strong>
+
+                            <span th:text="${employee != null && employee.address != null ? employee.address.house_no + ' ' + employee.address.street + ', ' + employee.address.barangay + ', ' + employee.address.city : 'N/A'}">
+                                Full Address
+                            </span>
+
+                            <strong>House Number:</strong>
+                            <input type="text" id="house_no" name="house_no" th:value="${employee.address.house_no}" required>
+
+                            <strong>Street:</strong>
+                            <input type="text" id="street" name="street" th:value="${employee.address.street}" required>
+
+
+                            <strong>Barangay:</strong>
+                            <input type="text" id="barangay" name="barangay" th:value="${employee.address.barangay}" required>
+
+                            <strong>City:</strong>
+                            <input type="text" id="city" name="city" th:value="${employee.address.city}" required>
+                            <button type="submit" class="btn btn-dark">Save</button>
+                        </li>
+                    </ul>
+                </form>
                 <a href="/" class="btn btn-primary mt-3">Back to Employee List</a>
             </div>
         </div>

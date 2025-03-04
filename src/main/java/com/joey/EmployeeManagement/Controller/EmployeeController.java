@@ -2,6 +2,7 @@ package com.joey.EmployeeManagement.Controller;
 
 import com.joey.EmployeeManagement.Model.Employee;
 import com.joey.EmployeeManagement.Services.EmployeeService;
+import com.joey.EmployeeManagement.auth.RegisterRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.security.PublicKey;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -66,7 +68,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/employee/{id}")
-    public String homepage(@PathVariable Long id, Model model, Principal principal) {
+    public String viewEmployee(@PathVariable Long id, Model model, Principal principal) {
         Optional<Employee> employee = this.employeeService.get(id);
 
         if (principal != null) {
@@ -83,12 +85,15 @@ public class EmployeeController {
     }
 
     @PostMapping("/create/employee")
-    public ResponseEntity<Employee> createEmployee(@Valid @ModelAttribute Employee employee){
+    public String createEmployee(@Valid @ModelAttribute RegisterRequest employee){
         Employee savedEmployee = this.employeeService.create(employee);
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .header("Location", "/" + savedEmployee.getId())
-                .body(savedEmployee);
+        return "redirect:/";
+    }
+
+    @PostMapping("/update/employee/{id}")
+    public String updateEmployee(@Valid @ModelAttribute RegisterRequest employee, @PathVariable Long id, Model model){
+        Employee savedEmployee = this.employeeService.update(employee, id);
+        return "redirect:/employee/"+ id;
     }
 
     @PostMapping("/employee/delete/{id}")
@@ -99,13 +104,87 @@ public class EmployeeController {
     }
 
     @GetMapping("/search")
-    public String searchBooks(@RequestParam(value = "keyword", required = false) String keyword, Model model, Principal principal) {
+    public String searchEmployee(@RequestParam(value = "keyword", required = false) String keyword, Model model, Principal principal) {
         List<Employee> employees;
         if (keyword == null || keyword.trim().isEmpty()) {
             employees = (List<Employee>) employeeService.getAll();
         } else {
-            employees = employeeService.searchBooks(keyword);
+            employees = employeeService.searchEmployees(keyword);
         }
+
+        double averageSalary = 0;
+        double averageAge = 0;
+        int count = 0;
+
+        for (Employee employee : employees) {
+            averageSalary += employee.getSalary();
+            averageAge += employee.getAge();
+            count++;
+        }
+
+        if (count > 0) {
+            averageSalary /= count;
+            averageAge /= count;
+        }
+
+        model.addAttribute("employees", employees);
+        model.addAttribute("avgSalary", averageSalary);
+        model.addAttribute("avgAge", averageAge);
+
+        if (principal != null) {
+            String username = principal.getName();
+            model.addAttribute("username", username);
+
+        } else {
+            System.out.println("No user is logged in.");
+            return "redirect:/login_page";
+        }
+
+        model.addAttribute("employees", employees);
+        return "index";
+    }
+
+    @GetMapping("/employee/filter")
+    public String filterEmployee(
+            @RequestParam(value = "filterDepartment", required = false) String filterDepartment,
+            @RequestParam(value = "filterAge", required = false) String filterAge,
+            Model model, Principal principal) {
+
+        List<Employee> employees;
+
+        if (filterDepartment == null || filterDepartment.trim().isEmpty()) {
+            employees = (List<Employee>) employeeService.getAll();
+        } else {
+            employees = employeeService.searchEmployees(filterDepartment);
+        }
+
+        if (!filterAge.trim().isEmpty()) {
+            String[] ageRange = filterAge.split("-");
+            int minAge = Integer.parseInt(ageRange[0]);
+            int maxAge = Integer.parseInt(ageRange[1]);
+            employees = employees.stream()
+                    .filter(e -> e.getAge() >= minAge && e.getAge() <= maxAge)
+                    .toList();
+        }
+
+        double averageSalary = 0;
+        double averageAge = 0;
+        int count = 0;
+
+        for (Employee employee : employees) {
+            averageSalary += employee.getSalary();
+            averageAge += employee.getAge();
+            count++;
+        }
+
+        if (count > 0) {
+            averageSalary /= count;
+            averageAge /= count;
+        }
+
+        model.addAttribute("employees", employees);
+        model.addAttribute("avgSalary", averageSalary);
+        model.addAttribute("avgAge", averageAge);
 
         if (principal != null) {
             String username = principal.getName();

@@ -16,4 +16,5 @@ public interface EmployeeRepository extends CrudRepository<Employee,Long> {
             "OR LOWER(e.lname) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
             "OR LOWER(e.department) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<Employee> searchEmployees(@Param("keyword") String keyword);
+
 }

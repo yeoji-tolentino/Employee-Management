@@ -23,42 +23,65 @@
 </head>
 
 <body class="w-100 h-100">
+<div id="header-wrap" class="mb-5">
+	<header id="header" class="d-flex justify-content-between p-4">
+		<h1 class="f2-3"><a href="/" class="text-decoration-none text-dark">EM-SYS</a></h1>
 
-
-<div id="header-wrap">
-	<header id="header">
-
+		<form class="w-50 d-flex" id="searchForm" method="GET" action="/search">
+			<input class="w-100 m-0 form-control rounded-0 p-2" type="text" id="searchInput" name="keyword" placeholder="Search books...">
+			<button class="btn btn-dark m-0 rounded-0" type="submit">Search</button>
+		</form>
+		<a href="/logout" class="text-decoration-none fs-4 fw-bold">Logout</a>
 	</header>
 </div>
-<div class="container-md">
-	<form class="w-100 d-flex" id="searchForm" method="GET" action="/search">
-		<input class="w-100 m-0 form-controle rounded-0" type="text" id="searchInput" name="keyword" placeholder="Search books...">
-		<button class="btn btn-dark m-0 rounded-0" type="submit">Search</button>
+<div class="container-md mt-10 p-5">
+	<form method="GET" action="/employee/filter" class="d-flex flex-row justify-content-between">
+		<div class="w-100 d-flex flex-row">
+			<select name="filterDepartment" id="filterDepartment" class="w-25 me-2 form-select rounded-0">
+				<option></option>
+				<option value="IT">IT</option>
+				<option value="HR">HR</option>
+				<option value="Admin">Admin</option>
+			</select>
+
+			<select name="filterAge" id="filterAge" class="w-25 form-select me-2 rounded-0">
+				<option></option>
+				<option value="18-30">18-30</option>
+				<option value="31-40">31-40</option>
+				<option value="41-50">41-50</option>
+				<option value="51-60">51-60</option>
+			</select>
+			<button type="submit" class="btn btn-dark rounded-0 px-3">Apply</button>
+		</div>
+		<button type="button" class="btn btn-primary rounded-0 px-2" data-bs-toggle="modal" data-bs-target="#exampleModal">
+			Create
+		</button>
+
 	</form>
-	<table class="table">
-		<thead>
-			<th scope="col">Name</th>
+	<table class="table p-5">
+		<thead class="text-center">
 			<th scope="col">Employee Id</th>
-			<th scope="col">Birthdate</th>
+			<th scope="col-2">Name</th>
+			<th scope="col">Age</th>
 			<th scope="col">Department</th>
 			<th scope="col">Salary</th>
-			<th scope="col">Actions</th>
+			<th scope="col-1">Actions</th>
 		</thead>
 		<tbody>
-		<tr th:each="employee : ${employees}">
+		<tr th:each="employee : ${employees}" class="text-center">
+			<td th:text="${employee.employee_id != null ? employee.employee_id : 0}"></td>
 			<td th:text="${employee.fname != null ? employee.fname + ' ' + employee.lname : 'Unknown'}"></td>
-			<td th:text="${employee.id != null ? employee.id : 0}"></td>
-			<td th:text="${employee.birthdate != null ? employee.birthdate : 0}"></td>
+			<td th:text="${employee.age != null ? employee.age : 0}"></td>
 			<td th:text="${employee.department != null ? employee.department : 0}"></td>
 			<td th:text="${employee.salary != null ? employee.salary : 0}"></td>
 			<td>
-				<div class="d-flex flex-row">
-					<a th:href="@{/employee/{id}(id=${employee.id})}" class="btn btn-dark text-decoration-none m-1"><i class="bi bi-eye">View</i></a>
+				<div>
+					<a th:href="@{/employee/{id}(id=${employee.id})}" class="btn btn-dark text-decoration-none rounded-0 m-1 p-2">View</a>
 					<form th:action="@{/employee/delete/{id}(id=${employee.id})}" method="post" class="d-inline">
 						<input type="hidden" name="_method" value="delete">
 
-						<button type="submit" class="btn btn-danger btn-sm">
-							<i class="bi bi-trash">Delete</i>
+						<button type="submit" class="btn btn-danger btn-sm rounded-0 m-1 p-2">
+							Delete
 						</button>
 					</form>
 				</div>
@@ -66,15 +89,83 @@
 		</tr>
 		</tbody>
 	</table>
+	<p class="fw-bold f2-5" th:text="${avgSalary != null ? 'Avarage Salary: ' + avgSalary : 'Unknown'}"></p>
+	<p class="fw-bold f2-5" th:text="${avgAge != null ? 'Avarage Age: ' + avgAge : 'Unknown'}"></p>
 </div>
-<p th:text="${avgSalary != null ? 'Avarage Salary: ' + avgSalary : 'Unknown'}"></p>
-<p th:text="${avgAge != null ? 'Avarage Age: ' + avgAge : 'Unknown'}"></p>
-<footer id="footer">
-	<div class="container">
 
-	</div>
-	</div>
+<footer id="footer">
+	<p>Copy Right 2025</p>
 </footer>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form method="POST" action="/create/employee">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">Create Employee</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+					<div class="form-floating mb-3">
+						<input type="text" class="form-control" id="employee_id" name="employee_id" placeholder="Employee ID">
+						<label for="employee_id">Employee ID</label>
+					</div>
+					<div class="form-floating mb-3">
+						<input type="text" class="form-control" id="fname" name="fname" placeholder="First Name">
+						<label for="fname">First Name</label>
+					</div>
+					<div class="form-floating mb-3">
+						<input type="text" class="form-control" id="lname" name="lname" placeholder="Last Name">
+						<label for="lname">Last Name</label>
+					</div>
+					<div class="form-floating mb-3">
+						<input type="text" class="form-control" id="department" name="department" placeholder="Department">
+						<label for="department">Department</label>
+					</div>
+					<div class="form-floating mb-3">
+						<input type="number" class="form-control" id="salary" name="salary" placeholder="Salary">
+						<label for="salary">Salary</label>
+					</div>
+					<div class="form-floating mb-3">
+						<input type="number" class="form-control" id="phone" name="phone" placeholder="Phone">
+						<label for="phone">Phone</label>
+					</div>
+					<div class="form-floating mb-3">
+						<input type="date" class="form-control" id="birthdate" name="birthdate" placeholder="Birthdate">
+						<label for="birthdate">Birthdate</label>
+					</div>
+					<div class="form-floating mb-3">
+						<input type="number" class="form-control" id="age" name="age" placeholder="Age">
+						<label for="age">Age</label>
+					</div>
+					<div class="form-floating mb-3">
+						<input type="number" class="form-control" id="house_no" name="house_no" placeholder="House Number">
+						<label for="house_no">House Number</label>
+					</div>
+					<div class="form-floating mb-3">
+						<input type="text" class="form-control" id="street" name="street" placeholder="Street">
+						<label for="street">Street</label>
+					</div>
+					<div class="form-floating mb-3">
+						<input type="text" class="form-control" id="barangay" name="barangay" placeholder="Barangay">
+						<label for="barangay">Barangay</label>
+					</div>
+					<div class="form-floating mb-3">
+						<input type="text" class="form-control" id="city" name="city" placeholder="City">
+						<label for="city">City</label>
+					</div>
+
+
+			</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary">Save changes</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 
